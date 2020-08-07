@@ -1,8 +1,8 @@
 # upnp
-Node.js CLI program to browse UPnP media servers.
+Node.js program to discover and browse UPnP media servers.
 
 ### Introduction
-`upnp` is a Node.js program to demonstrate how to browse UPnP media servers.
+`upnp` is a Node.js CLI program to demonstrate how to discover and browse UPnP media servers.
 
 ### Prerequisites
 - The file `ask.js` requires Node.js >= 14.0.0 due to usage of the optional chaining
