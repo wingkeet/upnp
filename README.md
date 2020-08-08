@@ -7,9 +7,7 @@ Node.js program to discover and browse UPnP media servers.
 ### Prerequisites
 - The file `ask.js` requires Node.js >= 14.0.0 due to usage of the optional chaining
 operator (?.) from ES2020.
-- The file `upnp.js` has two external dependencies, i.e.,
-[axios](https://www.npmjs.com/package/axios) and
-[xml2js](https://www.npmjs.com/package/xml2js).
+- The file `upnp.js` has one external dependency, i.e., [xml2js](https://www.npmjs.com/package/xml2js).
 
 ### Authors
 * **Steve Leong** - *Initial work*
