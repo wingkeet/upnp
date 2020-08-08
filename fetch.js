@@ -64,12 +64,14 @@ async function fetch(url, options) {
     })
 }
 
-async function get(url, options) {
-    return await fetch(url, options === undefined ? {method: 'GET'} : {...options, ...{method: 'GET'}})
+async function get(url, options = {}) {
+    options.method = 'GET'
+    return await fetch(url, options)
 }
 
-async function post(url, options) {
-    return await fetch(url, options === undefined ? {method: 'POST'} : {...options, ...{method: 'POST'}})
+async function post(url, options = {}) {
+    options.method = 'POST'
+    return await fetch(url, options)
 }
 
 module.exports = { get, post }
