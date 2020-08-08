@@ -1,11 +1,11 @@
 'use strict'
 
-const axios = require('axios')
 const dgram = require('dgram')
 const util = require('util')
 const xml2js = require('xml2js')
 const URL = require('url').URL
 const EventEmitter = require('events')
+const fetch = require('./fetch')
 
 // Parse SSDP (Simple Service Discovery Protocol) response
 function parseHttpResponse(res) {
@@ -41,9 +41,9 @@ class MediaServer {
 
     async getXMLDescription() {
         // Get XML file
-        const response =  await axios.get(this.ssdpResponse.headers.location)
+        const response =  await fetch.get(this.ssdpResponse.headers.location)
         //console.debug(`${new Date().toISOString()} ${getAddressAndPort(response.request.socket.address())} << GET ${res.headers.location}`)
-        if (response.status !== 200 || !response.headers['content-type'].includes('text/xml')) {
+        if (response.statusCode !== 200 || !response.headers['content-type'].includes('text/xml')) {
             throw new Error(`Failed to download XML file from ${location}`)
         }
         // Convert XML to JavaScript object
@@ -90,16 +90,10 @@ class MediaServer {
                 + '</s:Body>'
                 + '</s:Envelope>'
 
-            const response = await axios({
-                method: 'post',
-                url: this.controlURL,
-                timeout: 4000,
-                headers: headers,
-                data: body
-            })
+            const response = await fetch.post(this.controlURL, { timeout: 4000, headers, body })
             //console.log(`${new Date().toISOString()} ${getAddressAndPort(response.request.socket.address())} << POST ${this.controlURL}`)
             //console.debug(response)
-            if (response.status === 200 && response.headers['content-type'].includes('text/xml')) {
+            if (response.statusCode === 200 && response.headers['content-type'].includes('text/xml')) {
                 const xml = response.data
                 let result = await xml2js.parseStringPromise(xml)
                 //console.log(util.inspect(result, false, null))

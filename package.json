@@ -1,7 +1,7 @@
 {
   "name": "upnp",
-  "version": "0.0.1",
-  "description": "Browse UPnP media servers",
+  "version": "0.0.2",
+  "description": "Discover and browse UPnP media servers",
   "main": "main.js",
   "scripts": {
     "start": "node main.js",
@@ -15,7 +15,6 @@
     "url": "https://github.com/wingkeet/upnp.git"
   },
   "dependencies": {
-    "axios": "^0.19.2",
     "xml2js": "^0.4.23"
   }
 }
