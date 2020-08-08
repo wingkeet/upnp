@@ -5,14 +5,19 @@ const https = require('https')
 const URL = require('url').URL
 
 function getProtocol(url) {
-    switch (new URL(url).protocol) {
+    const protocol = new URL(url).protocol
+    switch (protocol) {
         case 'http:':
             return http
         case 'https:':
             return https
         default:
-            throw new Error('Unsupported protocol')
+            throw new Error(`Unsupported protocol '${protocol}'`)
     }
+}
+
+function success(statusCode) {
+    return statusCode >= 200 && statusCode < 300
 }
 
 // https://nodejs.org/dist/latest-v14.x/docs/api/http.html#http_http_request_url_options_callback
@@ -27,6 +32,12 @@ async function fetch(url, options) {
                 console.log(res.headers)
             }
 
+            if (!success(statusCode)) {
+                res.resume()
+                reject(new Error(`statusCode: ${statusCode}, statusMessage: ${statusMessage}`))
+                return
+            }
+
             let buffer = Buffer.allocUnsafe(0)
             res.on('data', (chunk) => {
                 buffer = Buffer.concat([buffer, chunk])
@@ -39,20 +50,16 @@ async function fetch(url, options) {
                         data = JSON.parse(data)
                     }
                     catch (err) {
-                        const result = { statusCode, statusMessage,
-                            headers: res.headers, buffer, data, error: err }
-                        reject(result)
+                        reject(err)
                         return
                     }
                 }
-                const result = { statusCode, statusMessage, headers: res.headers, buffer, data }
-                res.statusCode === 200 ? resolve(result) : reject(result)
+                resolve({ statusCode, statusMessage, headers: res.headers, buffer, data })
             })
         })
 
         req.on('error', (err) => reject(err))
         if (options.method === 'POST' && options.body) {
-            req.setHeader('content-length', options.body.length)
             req.write(options.body)
         }
         req.end(() => {
@@ -71,7 +78,14 @@ async function get(url, options = {}) {
 
 async function post(url, options = {}) {
     options.method = 'POST'
+    options.headers['content-length'] = options.body ? Buffer.byteLength(options.body) : 0
     return await fetch(url, options)
 }
 
-module.exports = { get, post }
+async function json(url, obj) {
+    const headers = { 'content-type': 'application/json; charset=utf-8' }
+    const body = JSON.stringify(obj)
+    return await post(url, { headers, body })
+}
+
+module.exports = { get, post, json }
