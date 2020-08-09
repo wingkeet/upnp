@@ -28,23 +28,30 @@ function getAddressAndPort(addr) {
 }
 
 class MediaServer {
+    #ssdpResponse
+    #ssdpRinfo
+    #description
+    #controlURL
+    friendlyName
+
     constructor(msg, rinfo) {
-        this.ssdpResponse = parseHttpResponse(msg.toString())
-        this.ssdpRinfo = rinfo
+        this.#ssdpResponse = parseHttpResponse(msg.toString())
+        this.#ssdpRinfo = rinfo
     }
 
     async getDescription() {
-        this.description = await this.getXMLDescription()
-        this.friendlyName = this.description.root.device[0].friendlyName[0]
-        this.controlURL = this.getControlURL()
+        this.#description = await this.getXMLDescription()
+        this.friendlyName = this.#description.root.device[0].friendlyName[0]
+        this.#controlURL = this.getControlURL()
     }
 
     async getXMLDescription() {
         // Get XML file
-        const response =  await fetch.get(this.ssdpResponse.headers.location)
-        //console.debug(`${new Date().toISOString()} ${getAddressAndPort(response.request.socket.address())} << GET ${res.headers.location}`)
+        const url = this.#ssdpResponse.headers.location
+        const response =  await fetch.get(url)
+        //console.debug(`${new Date().toISOString()} ${getAddressAndPort(response.request.socket.address())} << GET ${url}`)
         if (response.statusCode !== 200 || !response.headers['content-type'].includes('text/xml')) {
-            throw new Error(`Failed to download XML file from ${location}`)
+            throw new Error(`Failed to download XML file from ${url}`)
         }
         // Convert XML to JavaScript object
         const xml = response.data
@@ -55,7 +62,7 @@ class MediaServer {
     }
 
     getServiceById(serviceId) {
-        const services = this.description.root.device[0].serviceList[0].service
+        const services = this.#description.root.device[0].serviceList[0].service
         for (const s of services) {
             if (s.serviceId[0] === serviceId) {
                 return s
@@ -66,7 +73,7 @@ class MediaServer {
 
     getControlURL() {
         const service = this.getServiceById('urn:upnp-org:serviceId:ContentDirectory')
-        const origin = new URL(this.ssdpResponse.headers.location).origin // e.g. http://192.168.0.169:6000
+        const origin = new URL(this.#ssdpResponse.headers.location).origin // e.g. http://192.168.0.169:6000
         const controlURL = new URL(service.controlURL, origin).href // e.g. http://192.168.0.169:6000/ContentDirectory/control
         return controlURL
     }
@@ -90,7 +97,7 @@ class MediaServer {
                 + '</s:Body>'
                 + '</s:Envelope>'
 
-            const response = await fetch.post(this.controlURL, { timeout: 4000, headers, body })
+            const response = await fetch.post(this.#controlURL, { timeout: 4000, headers, body })
             //console.log(`${new Date().toISOString()} ${getAddressAndPort(response.request.socket.address())} << POST ${this.controlURL}`)
             //console.debug(response)
             if (response.statusCode === 200 && response.headers['content-type'].includes('text/xml')) {
