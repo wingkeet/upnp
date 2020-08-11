@@ -2,7 +2,7 @@
 
 const http = require('http')
 const https = require('https')
-const URL = require('url').URL
+const { URL } = require('url')
 
 function getProtocol(url) {
     const protocol = new URL(url).protocol
@@ -83,7 +83,10 @@ async function post(url, options = {}) {
 }
 
 async function json(url, obj) {
-    const headers = { 'content-type': 'application/json; charset=utf-8' }
+    const headers = {
+        'accept': 'application/json',
+        'content-type': 'application/json; charset=utf-8'
+    }
     const body = JSON.stringify(obj)
     return await post(url, { headers, body })
 }

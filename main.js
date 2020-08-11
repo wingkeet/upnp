@@ -13,8 +13,7 @@ process.on('SIGINT', () => {
 // https://nodejs.org/api/http.html#http_http_get_url_options_callback
 function stream(url) {
     const req = http.get(url, (res) => {
-        const { statusCode, statusMessage } = res
-        console.log(statusCode, statusMessage)
+        console.log(res.statusCode, res.statusMessage)
         console.log(res.headers)
 
         res.on('error', (err) => {
@@ -30,39 +29,38 @@ function stream(url) {
     })
 }
 
-async function browse(devices) {
+async function browse(mediaServers) {
     let choices
     let answer
 
-    // Ask user to choose device
-    choices = devices.map(device => device.friendlyName)
-    //console.log(`Choose device: (${choices.length})`)
+    // Ask user to choose media server
+    choices = mediaServers.map(mediaServer => mediaServer.friendlyName)
     answer = await ask(choices, { color: 208 })
     if (answer === -1) return
     console.log(choices[answer])
 
     // Browse directories and files
-    const device = devices[answer]
+    const mediaServer = mediaServers[answer]
     let objectId = 0
     let isContainer = true
     let choice
     while (isContainer) {
-        let items = await device.browse(objectId)
-        if (items.length === 0) break
+        let contents = await mediaServer.browse(objectId)
+        if (contents.length === 0) break
 
-        choices = items.map(item => item.title)
+        choices = contents.map(content => content.title)
         console.log(`What do you want to listen today? (${choices.length})`)
         answer = await ask(choices, { color: 6 })
         if (answer === -1) break
         console.log(choices[answer])
-    
-        objectId = items[answer].id
-        isContainer = items[answer].isContainer
-        choice = items[answer]
+
+        objectId = contents[answer].id
+        isContainer = contents[answer].isContainer
+        choice = contents[answer]
     }
 
     console.log(choice)
-    stream(choice.url)
+    if (choice) stream(choice.url)
 }
 
 function main() {
