@@ -1,5 +1,6 @@
 'use strict'
 
+const http = require('http')
 const ask = require('./ask')
 const upnp = require('./upnp')
 
@@ -8,6 +9,26 @@ process.on('SIGINT', () => {
     console.log('\nReceived SIGINT')
     process.exit()
 })
+
+// https://nodejs.org/api/http.html#http_http_get_url_options_callback
+function stream(url) {
+    const req = http.get(url, (res) => {
+        const { statusCode, statusMessage } = res
+        console.log(statusCode, statusMessage)
+        console.log(res.headers)
+
+        res.on('error', (err) => {
+            console.error(err)
+        })
+        res.on('data', (chunk) => {
+            //console.log(`chunk: ${chunk.length} bytes`)
+            process.stdout.write('.')
+        })
+        res.on('end', () => {
+            console.log('\nend')
+        })
+    })
+}
 
 async function browse(devices) {
     let choices
@@ -41,6 +62,7 @@ async function browse(devices) {
     }
 
     console.log(choice)
+    stream(choice.url)
 }
 
 function main() {
