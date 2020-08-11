@@ -106,29 +106,28 @@ class MediaServer {
                 //console.log(util.inspect(result, false, null))
 
                 // Inspect 'BrowseResponse'
-                let browseResponse = result['s:Envelope']['s:Body'][0]['u:BrowseResponse'][0]
-                //console.log(browseResponse)
+                const browseResponse = result['s:Envelope']['s:Body'][0]['u:BrowseResponse'][0]
                 result = await xml2js.parseStringPromise(browseResponse.Result[0])
-                //console.log(util.inspect(result, false, null))
 
                 const contents = []
-                let x = result['DIDL-Lite'].container
-                if (x) {
-                    for (const c of x) {
-                        const i = c['$']
-                        i.title = c['dc:title'][0]
-                        i.isContainer = true
-                        contents.push(i)
-                    }
+                const containers = result['DIDL-Lite'].container ?? []
+                for (const container of containers) {
+                    const content = container['$']
+                    content.title = container['dc:title'][0]
+                    content.class = container['upnp:class'][0]
+                    content.isContainer = true
+                    contents.push(content)
                 }
-                x = result['DIDL-Lite'].item
-                if (x) {
-                    for (const c of x) {
-                        const i = c['$']
-                        i.title = c['dc:title'][0]
-                        i.isContainer = false
-                        contents.push(i)
-                    }
+                const items = result['DIDL-Lite'].item ?? []
+                for (const item of items) {
+                    const content = item['$']
+                    content.title = item['dc:title'][0]
+                    content.class = item['upnp:class'][0]
+                    content.isContainer = false
+                    content.url = item.res[0]._
+                    content.size = item.res[0]['$'].size
+                    content.duration = item.res[0]['$'].duration
+                    contents.push(content)
                 }
                 return contents
             }
