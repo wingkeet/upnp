@@ -38,7 +38,6 @@ async function browse(mediaServers) {
     // Ask user to choose media server
     choices = mediaServers.map(mediaServer => mediaServer.friendlyName)
     answer = await ask(choices, { color: 208 })
-    if (answer === -1) return
     console.log(choices[answer])
 
     // Browse directories and files
