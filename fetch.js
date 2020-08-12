@@ -26,10 +26,10 @@ async function fetch(url, options) {
 
         const protocol = getProtocol(url)
         const req = protocol.request(url, options, (res) => {
-            const { statusCode, statusMessage } = res
+            const { statusCode, statusMessage, headers } = res
             if (options.verbose) {
                 console.log(`HTTP/${res.httpVersion} ${statusCode} ${statusMessage}`)
-                console.log(res.headers)
+                console.log(headers)
             }
 
             if (!success(statusCode)) {
@@ -44,7 +44,7 @@ async function fetch(url, options) {
             })
             res.on('end', () => {
                 let data = buffer.toString()
-                const contentType = res.headers['content-type']
+                const contentType = headers['content-type']
                 if (contentType.includes('application/json')) {
                     try {
                         data = JSON.parse(data)
@@ -54,7 +54,7 @@ async function fetch(url, options) {
                         return
                     }
                 }
-                resolve({ statusCode, statusMessage, headers: res.headers, buffer, data })
+                resolve({ statusCode, statusMessage, headers, buffer, data })
             })
         })
 
@@ -83,12 +83,15 @@ async function post(url, options = {}) {
 }
 
 async function json(url, obj) {
-    const headers = {
-        'accept': 'application/json',
-        'content-type': 'application/json; charset=utf-8'
+    const options = {
+        method: 'POST',
+        headers = {
+            'accept': 'application/json',
+            'content-type': 'application/json; charset=utf-8'
+        },
+        body = JSON.stringify(obj)
     }
-    const body = JSON.stringify(obj)
-    return await post(url, { headers, body })
+    return await fetch(url, options)
 }
 
 module.exports = { get, post, json }
