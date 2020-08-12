@@ -52,7 +52,6 @@ async function browse(mediaServers) {
         choices = contents.map(content => content.title)
         console.log(`What do you want to listen today? (${choices.length})`)
         answer = await ask(choices, { color: 6 })
-        if (answer === -1) break
         console.log(choices[answer])
 
         objectId = contents[answer].id

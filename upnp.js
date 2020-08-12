@@ -99,7 +99,7 @@ class MediaServer {
         const response = await fetch.post(this.#controlURL, { timeout: 4000, headers, body })
         //console.log(`${new Date().toISOString()} ${getAddressAndPort(response.request.socket.address())} << POST ${this.controlURL}`)
         //console.debug(response)
-        if (response.statusCode !== 200 && response.headers['content-type'].includes('text/xml')) {
+        if (response.statusCode === 200 && response.headers['content-type'].includes('text/xml')) {
             const xml = response.data
             let result = await xml2js.parseStringPromise(xml)
             //console.log(util.inspect(result, false, null))
