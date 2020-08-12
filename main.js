@@ -25,7 +25,8 @@ function stream(url) {
             process.stdout.write('.')
         })
         res.on('end', () => {
-            console.log(`\nactual bytes downloaded = ${downloadedBytes}`)
+            const ok = downloadedBytes == res.headers['content-length']
+            console.log(`\nactual bytes downloaded = ${downloadedBytes} (ok=${ok})`)
         })
     })
 }
