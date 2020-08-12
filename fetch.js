@@ -28,6 +28,7 @@ async function fetch(url, options) {
         const req = protocol.request(url, options, (res) => {
             const { statusCode, statusMessage, headers } = res
             if (options.verbose) {
+                console.log('Response HTTP status/headers:')
                 console.log(`HTTP/${res.httpVersion} ${statusCode} ${statusMessage}`)
                 console.log(headers)
             }
@@ -64,8 +65,10 @@ async function fetch(url, options) {
         }
         req.end(() => {
             if (options.verbose) {
+                console.log('Request address/port/headers/body:')
                 console.log(req.socket.address())
-                console.log(req._header)
+                process.stdout.write(req._header)
+                console.log(options.body)
             }
         })
     })
@@ -83,13 +86,15 @@ async function post(url, options = {}) {
 }
 
 async function json(url, obj) {
+    const body = JSON.stringify(obj)
     const options = {
         method: 'POST',
         headers: {
             'accept': 'application/json',
-            'content-type': 'application/json; charset=utf-8'
+            'content-type': 'application/json; charset=utf-8',
+            'content-length': body ? Buffer.byteLength(body) : 0,
         },
-        body: JSON.stringify(obj)
+        body
     }
     return await fetch(url, options)
 }
