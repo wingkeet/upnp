@@ -85,11 +85,11 @@ async function post(url, options = {}) {
 async function json(url, obj) {
     const options = {
         method: 'POST',
-        headers = {
+        headers: {
             'accept': 'application/json',
             'content-type': 'application/json; charset=utf-8'
         },
-        body = JSON.stringify(obj)
+        body: JSON.stringify(obj)
     }
     return await fetch(url, options)
 }
