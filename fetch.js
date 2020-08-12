@@ -98,7 +98,6 @@ async function json(url, obj) {
             'content-length': body ? Buffer.byteLength(body) : 0,
         },
         body,
-        verbose:1
     }
     return await fetch(url, options)
 }
