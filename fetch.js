@@ -21,7 +21,7 @@ function success(statusCode) {
 }
 
 // https://nodejs.org/dist/latest-v14.x/docs/api/http.html#http_http_request_url_options_callback
-async function fetch(url, options) {
+function fetch(url, options) {
     return new Promise((resolve, reject) => {
 
         const protocol = getProtocol(url)
