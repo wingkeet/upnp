@@ -21,7 +21,7 @@ function success(statusCode) {
 }
 
 // https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit
-const CYAN    = '\x1b[36m%s\x1b[0m'
+const CYAN = '\x1b[36m%s\x1b[0m'
 
 // https://nodejs.org/dist/latest-v14.x/docs/api/http.html#http_http_request_url_options_callback
 function fetch(url, options) {
