@@ -20,6 +20,9 @@ function success(statusCode) {
     return statusCode >= 200 && statusCode < 300
 }
 
+// https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit
+const CYAN    = '\x1b[36m%s\x1b[0m'
+
 // https://nodejs.org/dist/latest-v14.x/docs/api/http.html#http_http_request_url_options_callback
 function fetch(url, options) {
     return new Promise((resolve, reject) => {
@@ -28,7 +31,7 @@ function fetch(url, options) {
         const req = protocol.request(url, options, (res) => {
             const { statusCode, statusMessage, headers } = res
             if (options.verbose) {
-                console.log('Response HTTP status/headers:')
+                console.log(CYAN, 'RESPONSE:')
                 console.log(`HTTP/${res.httpVersion} ${statusCode} ${statusMessage}`)
                 console.log(headers)
             }
@@ -65,7 +68,7 @@ function fetch(url, options) {
         }
         req.end(() => {
             if (options.verbose) {
-                console.log('Request address/port/headers/body:')
+                console.log(CYAN, 'REQUEST:')
                 console.log(req.socket.address())
                 process.stdout.write(req._header)
                 console.log(options.body)
@@ -94,7 +97,8 @@ async function json(url, obj) {
             'content-type': 'application/json; charset=utf-8',
             'content-length': body ? Buffer.byteLength(body) : 0,
         },
-        body
+        body,
+        verbose:1
     }
     return await fetch(url, options)
 }
