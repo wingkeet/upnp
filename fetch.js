@@ -32,8 +32,8 @@ function fetch(url, options) {
     return new Promise((resolve, reject) => {
         const maxRedirects = Number(options.maxRedirects) || 0
         let redirects = 0
-        redirect(url)
-        function redirect(url) {
+        request(url)
+        function request(url) {
             const protocol = getProtocol(url)
             const req = protocol.request(url, options, (res) => {
                 const { statusCode, statusMessage, headers } = res
@@ -47,7 +47,7 @@ function fetch(url, options) {
                     res.resume()
                     if (isRedirect(statusCode) && redirects < maxRedirects) {
                         redirects++
-                        setImmediate(redirect, headers.location)
+                        setImmediate(request, headers.location)
                     }
                     else {
                         reject(new Error(`statusCode: ${statusCode}, statusMessage: ${statusMessage}`))
