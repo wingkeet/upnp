@@ -111,7 +111,6 @@ class MediaServer {
             title: container['dc:title'][0],
             class: container['upnp:class'][0],
             isContainer: true
-
         }))
         let items = result['DIDL-Lite'].item ?? []
         items = items.map(item => ({
