@@ -49,16 +49,13 @@ class MediaServer {
         // Get XML file
         const url = this.#ssdpResponse.headers.location
         const response =  await fetch.get(url)
-        //console.debug(`${new Date().toISOString()} ${getAddressAndPort(response.request.socket.address())} << GET ${url}`)
         if (response.statusCode !== 200 || !response.headers['content-type'].includes('text/xml')) {
             throw new Error(`Failed to download XML file from ${url}`)
         }
+
         // Convert XML to JavaScript object
         const xml = response.data
-        //console.debug(xml)
-        const description = await xml2js.parseStringPromise(xml)
-        //console.debug(util.inspect(description, { depth: Infinity, colors: true }))
-        return description
+        return await xml2js.parseStringPromise(xml)
     }
 
     getServiceById(serviceId) {
@@ -97,42 +94,36 @@ class MediaServer {
             + '</s:Envelope>'
 
         const response = await fetch.post(this.#controlURL, { timeout: 4000, headers, body })
-        //console.log(`${new Date().toISOString()} ${getAddressAndPort(response.request.socket.address())} << POST ${this.controlURL}`)
-        //console.debug(response)
-        if (response.statusCode === 200 && response.headers['content-type'].includes('text/xml')) {
-            const xml = response.data
-            let result = await xml2js.parseStringPromise(xml)
-            //console.log(util.inspect(result, false, null))
-
-            // Inspect 'BrowseResponse'
-            const browseResponse = result['s:Envelope']['s:Body'][0]['u:BrowseResponse'][0]
-            result = await xml2js.parseStringPromise(browseResponse.Result[0])
-
-            const contents = []
-            const containers = result['DIDL-Lite'].container ?? []
-            for (const container of containers) {
-                const content = container['$']
-                content.title = container['dc:title'][0]
-                content.class = container['upnp:class'][0]
-                content.isContainer = true
-                contents.push(content)
-            }
-            const items = result['DIDL-Lite'].item ?? []
-            for (const item of items) {
-                const content = item['$']
-                content.title = item['dc:title'][0]
-                content.class = item['upnp:class'][0]
-                content.isContainer = false
-                content.url = item.res[0]._
-                content.size = item.res[0]['$'].size
-                content.duration = item.res[0]['$'].duration
-                contents.push(content)
-            }
-            return contents
-        }
-        else {
+        if (response.statusCode !== 200 || !response.headers['content-type'].includes('text/xml')) {
             throw new Error('Unexpected response getting XML from media server')
         }
+
+        const xml = response.data
+        let result = await xml2js.parseStringPromise(xml)
+
+        // Inspect 'BrowseResponse'
+        const browseResponse = result['s:Envelope']['s:Body'][0]['u:BrowseResponse'][0]
+        result = await xml2js.parseStringPromise(browseResponse.Result[0])
+
+        let containers = result['DIDL-Lite'].container ?? []
+        containers = containers.map(container => ({
+            ...container['$'],
+            title: container['dc:title'][0],
+            class: container['upnp:class'][0],
+            isContainer: true
+
+        }))
+        let items = result['DIDL-Lite'].item ?? []
+        items = items.map(item => ({
+            ...item['$'],
+            title: item['dc:title'][0],
+            class: item['upnp:class'][0],
+            isContainer: false,
+            url: item.res[0]._,
+            size: item.res[0]['$'].size,
+            duration: item.res[0]['$'].duration
+        }))
+        return containers.concat(items)
     }
 }
 

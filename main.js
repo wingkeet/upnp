@@ -73,15 +73,8 @@ function main() {
         //console.log(`Local client listening on ${address.address}:${address.port}`)
     })
     watcher.on('mediaServer', (mediaServer) => {
-        setImmediate(async () => {
-            try {
-                mediaServers.push(mediaServer)
-                console.log(mediaServer)
-            }
-            catch (err) {
-                console.error(err)
-            }
-        })
+        mediaServers.push(mediaServer)
+        console.log(mediaServer)
     })
     watcher.on('end', () => {
         console.log(`${mediaServers.length} media servers found.`)
