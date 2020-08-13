@@ -16,8 +16,12 @@ function getProtocol(url) {
     }
 }
 
-function success(statusCode) {
-    return statusCode >= 200 && statusCode < 300
+function isSuccess(statusCode) {
+    return statusCode >= 200 && statusCode <= 299
+}
+
+function isRedirect(statusCode) {
+    return statusCode >= 300 && statusCode <= 399
 }
 
 // https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit
@@ -26,54 +30,64 @@ const CYAN = '\x1b[36m%s\x1b[0m'
 // https://nodejs.org/dist/latest-v14.x/docs/api/http.html#http_http_request_url_options_callback
 function fetch(url, options) {
     return new Promise((resolve, reject) => {
-
-        const protocol = getProtocol(url)
-        const req = protocol.request(url, options, (res) => {
-            const { statusCode, statusMessage, headers } = res
-            if (options.verbose) {
-                console.log(CYAN, 'RESPONSE:')
-                console.log(`HTTP/${res.httpVersion} ${statusCode} ${statusMessage}`)
-                console.log(headers)
-            }
-
-            if (!success(statusCode)) {
-                res.resume()
-                reject(new Error(`statusCode: ${statusCode}, statusMessage: ${statusMessage}`))
-                return
-            }
-
-            let buffer = Buffer.allocUnsafe(0)
-            res.on('data', (chunk) => {
-                buffer = Buffer.concat([buffer, chunk])
-            })
-            res.on('end', () => {
-                let data = buffer.toString()
-                const contentType = headers['content-type']
-                if (contentType.includes('application/json')) {
-                    try {
-                        data = JSON.parse(data)
-                    }
-                    catch (err) {
-                        reject(err)
-                        return
-                    }
+        const maxRedirects = Number(options.maxRedirects) || 0
+        let redirects = 0
+        redirect(url)
+        function redirect(url) {
+            const protocol = getProtocol(url)
+            const req = protocol.request(url, options, (res) => {
+                const { statusCode, statusMessage, headers } = res
+                if (options.verbose) {
+                    console.log(CYAN, 'RESPONSE:')
+                    console.log(`HTTP/${res.httpVersion} ${statusCode} ${statusMessage}`)
+                    console.log(headers)
                 }
-                resolve({ statusCode, statusMessage, headers, buffer, data })
-            })
-        })
 
-        req.on('error', (err) => reject(err))
-        if (options.method === 'POST' && options.body) {
-            req.write(options.body)
-        }
-        req.end(() => {
-            if (options.verbose) {
-                console.log(CYAN, 'REQUEST:')
-                console.log(req.socket.address())
-                process.stdout.write(req._header)
-                console.log(options.body)
+                if (!isSuccess(statusCode)) {
+                    res.resume()
+                    if (isRedirect(statusCode) && redirects < maxRedirects) {
+                        redirects++
+                        setImmediate(redirect, headers.location)
+                    }
+                    else {
+                        reject(new Error(`statusCode: ${statusCode}, statusMessage: ${statusMessage}`))
+                    }
+                    return
+                }
+
+                let buffer = Buffer.allocUnsafe(0)
+                res.on('data', (chunk) => {
+                    buffer = Buffer.concat([buffer, chunk])
+                })
+                res.on('end', () => {
+                    let data = buffer.toString()
+                    const contentType = headers['content-type']
+                    if (contentType.includes('application/json')) {
+                        try {
+                            data = JSON.parse(data)
+                        }
+                        catch (err) {
+                            reject(err)
+                            return
+                        }
+                    }
+                    resolve({ statusCode, statusMessage, headers, buffer, data })
+                })
+            })
+
+            req.on('error', (err) => reject(err))
+            if (options.method === 'POST' && options.body) {
+                req.write(options.body)
             }
-        })
+            req.end(() => {
+                if (options.verbose) {
+                    console.log(CYAN, 'REQUEST:')
+                    console.log(req.socket.address())
+                    process.stdout.write(req._header)
+                    console.log(options.body)
+                }
+            })
+        }
     })
 }
 
