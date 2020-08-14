@@ -33,6 +33,7 @@ function fetch(url, options) {
         const maxRedirects = Number(options.maxRedirects) || 0
         let redirects = 0
         httpRequest(url)
+
         function httpRequest(url) {
             const protocol = getProtocol(url)
             const req = protocol.request(url, options, (res) => {
