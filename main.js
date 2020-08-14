@@ -16,17 +16,17 @@ function stream(url) {
         console.log(res.statusCode, res.statusMessage)
         console.log(res.headers)
 
-        let downloadedBytes = 0
+        let bytes = 0
         res.on('error', (err) => {
             console.error(err)
         })
         res.on('data', (chunk) => {
-            downloadedBytes += chunk.length
+            bytes += chunk.length
             process.stdout.write('.')
         })
         res.on('end', () => {
-            const ok = downloadedBytes == res.headers['content-length']
-            console.log(`\nactual bytes downloaded = ${downloadedBytes} (ok=${ok})`)
+            const ok = bytes == res.headers['content-length']
+            console.log(`\nactual bytes downloaded = ${bytes} (ok=${ok})`)
         })
     })
 }
