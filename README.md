@@ -12,6 +12,7 @@ from ES2020.
 It also requires Node.js >= 14.0.0 due to usage of the
 [nullish coalescing operator (??)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing_operator)
 from ES2020.
+- To play audio tracks, [FFmpeg](https://ffmpeg.org/) is used.
 
 ### Authors
 * **Steve Leong** - *Initial work*
