@@ -41,7 +41,6 @@ function play(url) {
             console.error(`exec error: ${err}`)
             return
         }
-        console.log(stderr)
     })
 }
 
