@@ -1,5 +1,6 @@
 'use strict'
 
+const cp = require('child_process')
 const http = require('http')
 const ask = require('./ask')
 const upnp = require('./upnp')
@@ -28,6 +29,19 @@ function stream(url) {
             const ok = bytes == res.headers['content-length']
             console.log(`\nactual bytes downloaded = ${bytes} (ok=${ok})`)
         })
+    })
+}
+
+// Requires FFmpeg (https://ffmpeg.org/)
+function play(url) {
+    const cmd = `ffplay -nodisp -loglevel quiet -autoexit -t 10 '${url}'`
+    console.log(cmd)
+    cp.exec(cmd, (err, stdout, stderr) => {
+        if (err) {
+            console.error(`exec error: ${err}`)
+            return
+        }
+        console.log(stderr)
     })
 }
 
