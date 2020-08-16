@@ -67,9 +67,9 @@ async function browse(mediaServers) {
         answer = await ask(choices, { color: 6 })
         console.log(choices[answer])
 
-        objectId = contents[answer].id
-        isContainer = contents[answer].isContainer
         choice = contents[answer]
+        objectId = choice.id
+        isContainer = choice.isContainer
     }
 
     console.log(choice)
