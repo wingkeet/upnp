@@ -105,24 +105,29 @@ class MediaServer {
         const browseResponse = result['s:Envelope']['s:Body'][0]['u:BrowseResponse'][0]
         result = await xml2js.parseStringPromise(browseResponse.Result[0])
 
-        let containers = result['DIDL-Lite'].container ?? []
-        containers = containers.map(container => ({
-            ...container['$'],
-            title: container['dc:title'][0],
-            class: container['upnp:class'][0],
-            isContainer: true
-        }))
-        let items = result['DIDL-Lite'].item ?? []
-        items = items.map(item => ({
-            ...item['$'],
-            title: item['dc:title'][0],
-            class: item['upnp:class'][0],
-            isContainer: false,
-            url: item.res[0]._,
-            size: item.res[0]['$'].size,
-            duration: item.res[0]['$'].duration
-        }))
-        return containers.concat(items)
+        const contents = []
+        const containers = result['DIDL-Lite'].container ?? []
+        for (const container of containers) {
+            contents.push({
+                ...container['$'],
+                title: container['dc:title'][0],
+                class: container['upnp:class'][0],
+                isContainer: true
+            })
+        }
+        const items = result['DIDL-Lite'].item ?? []
+        for (const item of items) {
+            contents.push({
+                ...item['$'],
+                title: item['dc:title'][0],
+                class: item['upnp:class'][0],
+                isContainer: false,
+                url: item.res[0]._,
+                size: item.res[0]['$'].size,
+                duration: item.res[0]['$'].duration
+            })
+        }
+        return contents
     }
 }
 
