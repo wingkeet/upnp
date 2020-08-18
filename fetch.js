@@ -2,7 +2,6 @@
 
 const http = require('http')
 const https = require('https')
-const { URL } = require('url')
 
 function getProtocol(url) {
     const protocol = new URL(url).protocol
@@ -44,15 +43,10 @@ function fetch(url, options) {
                     console.log(headers)
                 }
 
-                if (!isSuccess(statusCode)) {
+                if (isRedirect(statusCode) && redirects < maxRedirects) {
                     res.resume()
-                    if (isRedirect(statusCode) && redirects < maxRedirects) {
-                        redirects++
-                        setImmediate(httpRequest, headers.location)
-                    }
-                    else {
-                        reject(new Error(`statusCode: ${statusCode}, statusMessage: ${statusMessage}`))
-                    }
+                    redirects++
+                    setImmediate(httpRequest, new URL(headers.location, url).href)
                     return
                 }
 
@@ -63,7 +57,7 @@ function fetch(url, options) {
                 res.on('end', () => {
                     let data = buffer.toString()
                     const contentType = headers['content-type']
-                    if (contentType.includes('application/json')) {
+                    if (contentType?.includes('application/json')) {
                         try {
                             data = JSON.parse(data)
                         }
@@ -83,7 +77,8 @@ function fetch(url, options) {
             req.end(() => {
                 if (options.verbose) {
                     console.log(CYAN, 'REQUEST:')
-                    console.log(req.socket.address())
+                    console.log('SOURCE:', req.socket.address())
+                    console.log('DESTINATION:', url)
                     process.stdout.write(req._header)
                     console.log(options.body)
                 }
