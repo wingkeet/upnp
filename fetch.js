@@ -56,8 +56,7 @@ function fetch(url, options) {
                 })
                 res.on('end', () => {
                     let data = buffer.toString()
-                    const contentType = headers['content-type']
-                    if (contentType?.includes('application/json')) {
+                    if (headers['content-type']?.includes('application/json')) {
                         try {
                             data = JSON.parse(data)
                         }
@@ -71,6 +70,7 @@ function fetch(url, options) {
             })
 
             req.on('error', (err) => reject(err))
+
             if (options.method === 'POST' && options.body) {
                 req.write(options.body)
             }
