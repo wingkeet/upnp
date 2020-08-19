@@ -46,7 +46,8 @@ function fetch(url, options) {
                 if (isRedirect(statusCode) && redirects < maxRedirects) {
                     res.resume()
                     redirects++
-                    setImmediate(httpRequest, new URL(headers.location, url).href)
+                    const redirectURL = new URL(headers.location, url).href
+                    setImmediate(httpRequest, redirectURL)
                     return
                 }
 
