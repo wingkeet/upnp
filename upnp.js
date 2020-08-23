@@ -4,7 +4,6 @@ const dgram = require('dgram')
 const util = require('util')
 const xml2js = require('xml2js')
 const EventEmitter = require('events')
-const { URL } = require('url')
 const fetch = require('./fetch')
 
 // Parse SSDP (Simple Service Discovery Protocol) response
