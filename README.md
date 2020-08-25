@@ -14,10 +14,10 @@ from ES2020.
 
 ### Installation
 ```
-git clone https://github.com/wingkeet/upnp.git
-cd upnp
-npm install
-sudo apt install ffmpeg
+$ git clone https://github.com/wingkeet/upnp.git
+$ cd upnp
+$ npm install
+$ sudo apt install ffmpeg
 ```
 
 ### Authors
