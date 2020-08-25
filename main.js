@@ -73,7 +73,7 @@ async function browse(mediaServers) {
     }
 
     console.log(choice)
-    if (choice) stream(choice.url)
+    if (choice) stream(choice.url) // call stream() or play()
 }
 
 function main() {
