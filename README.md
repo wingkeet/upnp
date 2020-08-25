@@ -12,6 +12,14 @@ from ES2020.
 - The file `upnp.js` has one external dependency, i.e., [xml2js](https://www.npmjs.com/package/xml2js).
 - To play audio tracks, [FFmpeg](https://ffmpeg.org/) is used.
 
+### Installation
+```
+git clone https://github.com/wingkeet/upnp.git
+cd upnp
+npm install
+sudo apt install ffmpeg
+```
+
 ### Authors
 * **Steve Leong** - *Initial work*
 
