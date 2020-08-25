@@ -14,6 +14,7 @@ from ES2020.
 
 ### Installation
 ```
+$ cd ~
 $ git clone https://github.com/wingkeet/upnp.git
 $ cd upnp
 $ npm install
