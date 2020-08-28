@@ -34,9 +34,11 @@ function stream(url) {
 
 // Requires FFmpeg (https://ffmpeg.org/)
 function play(url) {
-    const cmd = `ffplay -nodisp -loglevel quiet -autoexit -t 10 '${url}'`
+    const cmd = `ffplay -nodisp -loglevel quiet -autoexit -t 10 ${url}`
     console.log(cmd)
-    cp.exec(cmd, (err, stdout, stderr) => {
+    const args = cmd.split(' ')
+
+    cp.execFile(args[0], args.slice(1), (err, stdout, stderr) => {
         if (err) {
             console.error(`exec error: ${err}`)
             return
@@ -73,7 +75,7 @@ async function browse(mediaServers) {
     }
 
     console.log(choice)
-    if (choice) stream(choice.url) // call stream() or play()
+    if (choice) play(choice.url) // call stream() or play()
 }
 
 function main() {
