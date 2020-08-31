@@ -51,7 +51,7 @@ async function browse(mediaServers) {
     let answer
 
     // Ask user to choose media server
-    choices = mediaServers.map(mediaServer => mediaServer.friendlyName)
+    choices = mediaServers.map(mediaServer => mediaServer.friendlyName + '/')
     answer = await ask(choices, { color: 208 })
     console.log(choices[answer])
 
@@ -64,7 +64,7 @@ async function browse(mediaServers) {
         let contents = await mediaServer.browse(objectId)
         if (contents.length === 0) break
 
-        choices = contents.map(content => content.title)
+        choices = contents.map(content => content.isContainer ? content.title + '/' : content.title)
         console.log(`What do you want to listen today? (${choices.length})`)
         answer = await ask(choices, { color: 6 })
         console.log(choices[answer])
