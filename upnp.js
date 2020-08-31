@@ -142,7 +142,7 @@ function sendMSearch(sock) {
         //+ 'ST: upnp:rootdevice\r\n'
         + '\r\n'
     console.log(`${new Date().toISOString()} ${getAddressAndPort(sock.address())} >> ${address}:${port}`)
-    console.log(msg)
+    process.stdout.write(msg)
     sock.send(msg, port, address)
 }
 
