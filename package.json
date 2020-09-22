@@ -1,6 +1,6 @@
 {
   "name": "upnp",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Discover and browse UPnP media servers",
   "main": "main.js",
   "scripts": {
@@ -14,7 +14,12 @@
     "type": "git",
     "url": "https://github.com/wingkeet/upnp.git"
   },
+  "engineStrict": true,
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "dependencies": {
     "xml2js": "^0.4.23"
-  }
+  },
+  "homepage": "https://github.com/wingkeet/upnp"
 }
