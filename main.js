@@ -32,8 +32,8 @@ function stream(url) {
     })
 }
 
-// `ffplay` requires FFmpeg (https://ffmpeg.org/)
-// `gst-play-1.0` requires GStreamer (https://gstreamer.freedesktop.org/)
+// `ffplay` comes with FFmpeg (https://ffmpeg.org/)
+// `gst-play-1.0` comes with GStreamer (https://gstreamer.freedesktop.org/)
 function play(url) {
     //const cmd = `ffplay -nodisp -loglevel quiet -autoexit -t 10 ${url}`
     const cmd = `gst-play-1.0 ${url}`
