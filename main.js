@@ -32,8 +32,8 @@ function stream(url) {
     })
 }
 
-// `ffplay` comes with FFmpeg (https://ffmpeg.org/)
-// `gst-play-1.0` comes with GStreamer (https://gstreamer.freedesktop.org/)
+// `ffplay` is included in FFmpeg (https://ffmpeg.org/)
+// `gst-play-1.0` is included in GStreamer (https://gstreamer.freedesktop.org/)
 function play(url) {
     //const cmd = `ffplay -nodisp -loglevel quiet -autoexit -t 10 ${url}`
     const cmd = `gst-play-1.0 ${url}`
