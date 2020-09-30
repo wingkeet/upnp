@@ -10,7 +10,7 @@ Node.js program to discover and browse UPnP media servers.
 [nullish coalescing operator (??)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing_operator)
 from ES2020.
 - The file `upnp.js` has one external dependency, i.e., [xml2js](https://www.npmjs.com/package/xml2js).
-- To play audio tracks, [FFmpeg](https://ffmpeg.org/) is used.
+- To play audio tracks, GStreamer (included in all Linux distributions) is used.
 
 ### Installation
 ```
@@ -18,7 +18,6 @@ $ cd ~
 $ git clone https://github.com/wingkeet/upnp.git
 $ cd upnp
 $ npm install
-$ sudo apt install ffmpeg
 ```
 
 ### Authors
