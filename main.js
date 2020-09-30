@@ -32,15 +32,17 @@ function stream(url) {
     })
 }
 
-// Requires FFmpeg (https://ffmpeg.org/)
+// `ffplay` requires FFmpeg (https://ffmpeg.org/)
+// `gst-play-1.0` requires GStreamer (https://gstreamer.freedesktop.org/)
 function play(url) {
-    const cmd = `ffplay -nodisp -loglevel quiet -autoexit -t 10 ${url}`
+    //const cmd = `ffplay -nodisp -loglevel quiet -autoexit -t 10 ${url}`
+    const cmd = `gst-play-1.0 ${url}`
     console.log(cmd)
     const args = cmd.split(' ')
 
     cp.execFile(args[0], args.slice(1), (err, stdout, stderr) => {
         if (err) {
-            console.error(`exec error: ${err}`)
+            console.error(`execFile error: ${err}`)
             return
         }
     })
