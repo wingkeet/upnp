@@ -22,6 +22,7 @@ $ npm install
 
 ### Usage
 Type `npm start` to run the program. Below is a sample screenshot:
+
 ![Screenshot](images/screenshot.png)
 
 ### Authors
