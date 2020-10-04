@@ -74,6 +74,33 @@ class MediaServer {
         return controlURL
     }
 
+    // DIDL stands for Digital Item Description Language
+    #getContents(didlLite) {
+        const contents = []
+        const containers = didlLite.container ?? []
+        for (const container of containers) {
+            contents.push({
+                ...container['$'],
+                title: container['dc:title'][0],
+                class: container['upnp:class'][0],
+                isContainer: true
+            })
+        }
+        const items = didlLite.item ?? []
+        for (const item of items) {
+            contents.push({
+                ...item['$'],
+                title: item['dc:title'][0],
+                class: item['upnp:class'][0],
+                isContainer: false,
+                url: item.res[0]._,
+                size: item.res[0]['$'].size,
+                duration: item.res[0]['$'].duration
+            })
+        }
+        return contents
+    }
+
     async browse(objectId = 0) {
         const headers = {
             'accept': 'text/xml',
@@ -104,29 +131,7 @@ class MediaServer {
         const browseResponse = result['s:Envelope']['s:Body'][0]['u:BrowseResponse'][0]
         result = await xml2js.parseStringPromise(browseResponse.Result[0])
 
-        const contents = []
-        const containers = result['DIDL-Lite'].container ?? []
-        for (const container of containers) {
-            contents.push({
-                ...container['$'],
-                title: container['dc:title'][0],
-                class: container['upnp:class'][0],
-                isContainer: true
-            })
-        }
-        const items = result['DIDL-Lite'].item ?? []
-        for (const item of items) {
-            contents.push({
-                ...item['$'],
-                title: item['dc:title'][0],
-                class: item['upnp:class'][0],
-                isContainer: false,
-                url: item.res[0]._,
-                size: item.res[0]['$'].size,
-                duration: item.res[0]['$'].duration
-            })
-        }
-        return contents
+        return this.#getContents(result['DIDL-Lite'])
     }
 }
 
