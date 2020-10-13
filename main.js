@@ -94,7 +94,7 @@ function main() {
         console.log(mediaServer)
     })
     watcher.on('end', () => {
-        console.log(`${mediaServers.length} media servers found.`)
+        console.log(`Found ${mediaServers.length} media servers.`)
         if (mediaServers.length > 0) {
             browse(mediaServers).catch(err => console.error(err))
         }
