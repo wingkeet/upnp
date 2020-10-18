@@ -33,6 +33,6 @@ This project is licensed under the [MIT License](https://opensource.org/licenses
 see the [LICENSE](https://github.com/wingkeet/upnp/blob/master/LICENSE) file for details.
 
 ### References
-[UPnP Standards and Architecture](https://openconnectivity.org/developer/specifications/upnp-resources/upnp/)
-[UPnP on Wikipedia](https://en.wikipedia.org/wiki/Universal_Plug_and_Play)
-[UPnp Hacks](http://www.upnp-hacks.org/upnp.html)
+- [UPnP Standards and Architecture](https://openconnectivity.org/developer/specifications/upnp-resources/upnp/)
+- [UPnP on Wikipedia](https://en.wikipedia.org/wiki/Universal_Plug_and_Play)
+- [UPnp Hacks](http://www.upnp-hacks.org/upnp.html)
