@@ -49,8 +49,8 @@ function play(url) {
 }
 
 async function browse(mediaServers) {
-    const orange = 208;
-    const cyan = 14;
+    const orange = 208
+    const cyan = 14
     let choices
     let answer
 
