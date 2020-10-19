@@ -49,13 +49,15 @@ function play(url) {
 }
 
 async function browse(mediaServers) {
+    const orange = 208;
+    const cyan = 14;
     let choices
     let answer
 
     // Ask user to choose media server
     choices = mediaServers.map(mediaServer => mediaServer.friendlyName + '/')
-    answer = await ask(choices, { color: 208 })
-    console.log('\x1b[38;5;208m%s\x1b[0m', choices[answer])
+    answer = await ask(choices, { color: orange })
+    console.log(`\x1b[38;5;${orange}m${choices[answer]}\x1b[0m`)
 
     // Browse directories and files
     const mediaServer = mediaServers[answer]
@@ -68,8 +70,8 @@ async function browse(mediaServers) {
 
         choices = contents.map(content => content.isContainer ? content.title + '/' : content.title)
         console.log(`What do you want to listen today? (${choices.length})`)
-        answer = await ask(choices, { color: 14 })
-        console.log('\x1b[38;5;14m%s\x1b[0m', choices[answer])
+        answer = await ask(choices, { color: cyan })
+        console.log(`\x1b[38;5;${cyan}m${choices[answer]}\x1b[0m`)
 
         choice = contents[answer]
         objectId = choice.id
