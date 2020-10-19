@@ -65,7 +65,7 @@ async function browse(mediaServers) {
     let isContainer = true
     let choice
     while (isContainer) {
-        let contents = await mediaServer.browse(objectId)
+        const contents = await mediaServer.browse(objectId)
         if (contents.length === 0) break
 
         choices = contents.map(content => content.isContainer ? content.title + '/' : content.title)
