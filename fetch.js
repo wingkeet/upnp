@@ -6,12 +6,12 @@ const https = require('https')
 function getProtocol(url) {
     const protocol = new URL(url).protocol
     switch (protocol) {
-        case 'http:':
-            return http
-        case 'https:':
-            return https
-        default:
-            throw new Error(`Unsupported protocol '${protocol}'`)
+    case 'http:':
+        return http
+    case 'https:':
+        return https
+    default:
+        throw new Error(`Unsupported protocol '${protocol}'`)
     }
 }
 
