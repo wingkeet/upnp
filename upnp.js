@@ -94,7 +94,7 @@ class MediaServer {
                 class: item['upnp:class'][0],
                 isContainer: false,
                 url: item.res[0]._,
-                size: item.res[0]['$'].size,
+                size: Number(item.res[0]['$'].size),
                 duration: item.res[0]['$'].duration
             })
         }
