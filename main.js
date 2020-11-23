@@ -7,7 +7,7 @@ const upnp = require('./upnp')
 
 // Handle CTRL+C
 process.on('SIGINT', () => {
-    console.log('\nReceived SIGINT')
+    console.log('\nbye')
     process.exit()
 })
 
@@ -39,13 +39,8 @@ function play(url) {
     const cmd = `gst-play-1.0 ${url}`
     console.log(cmd)
     const args = cmd.split(' ')
-
-    cp.execFile(args[0], args.slice(1), (err, stdout, stderr) => {
-        if (err) {
-            console.error(`execFile error: ${err}`)
-            return
-        }
-    })
+    const player = cp.spawn(args[0], args.slice(1), {stdio: 'inherit'})
+    player.on('close', () => console.log('bye'))
 }
 
 async function browse(mediaServers) {
@@ -56,7 +51,7 @@ async function browse(mediaServers) {
 
     // Ask user to choose media server
     choices = mediaServers.map(mediaServer => mediaServer.friendlyName + '/')
-    answer = await ask(choices, { color: orange })
+    answer = await ask(choices, {color: orange})
     console.log(`\x1b[38;5;${orange}m${choices[answer]}\x1b[0m`)
 
     // Browse directories and files
