@@ -65,7 +65,7 @@ async function browse(mediaServers) {
 
         choices = contents.map(content => content.isContainer ? content.title + '/' : content.title)
         console.log(`What do you want to listen today? (${choices.length})`)
-        answer = await ask(choices, { color: cyan })
+        answer = await ask(choices, {color: cyan})
         console.log(`\x1b[38;5;${cyan}m${choices[answer]}\x1b[0m`)
 
         choice = contents[answer]
