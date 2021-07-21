@@ -47,7 +47,7 @@ class MediaServer {
     async getXMLDescription() {
         // Get XML file
         const url = this.#ssdpResponse.headers.location
-        const response =  await fetch.get(url)
+        const response = await fetch.get(url)
         if (response.statusCode !== 200 || !response.headers['content-type'].includes('text/xml')) {
             throw new Error(`Failed to download XML file from ${url}`)
         }
