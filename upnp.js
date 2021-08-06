@@ -151,10 +151,8 @@ function sendMSearch(sock) {
     sock.send(msg, port, address)
 }
 
-class MediaServerWatcher extends EventEmitter {}
-
 function discover(timeout = 5000) {
-    const watcher = new MediaServerWatcher()
+    const watcher = new EventEmitter()
     const sock = dgram.createSocket('udp4')
     sock.on('error', (err) => {
         sock.close()
